@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 //   });
 /** Helper: Call Local Ollama (Gemma 3:4b) */
 async function callGroqAI(messages: { role: string; content: string }[]) {
-  const response = await fetch('http://localhost:11434/api/chat', {
+  const response = await fetch('http://127.0.0.1:11434/api/chat', {
     method: 'POST',
     headers: {
       "Content-Type": "application/json",
