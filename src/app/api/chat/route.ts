@@ -53,22 +53,43 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** Helper: Call Groq AI */
+// /** Helper: Call Groq AI */
+// async function callGroqAI(messages: { role: string; content: string }[]) {
+//   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       model: 'google/gemma-3n-e4b-it:free',
+//       messages: messages.map(m => ({ role: m.role, content: m.content })),
+//       stream: false,
+//       max_tokens: 50, // slightly bigger for better context replies
+//       temperature: 0.7,
+//     }),
+//   });
+/** Helper: Call Local Ollama (Gemma 3:4b) */
 async function callGroqAI(messages: { role: string; content: string }[]) {
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetch('http://localhost:11434/api/chat', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: 'google/gemma-3n-e4b-it:free',
-      messages: messages.map(m => ({ role: m.role, content: m.content })),
+      model: "gemma3:4b",
+      messages: messages.map(m => ({
+        role: m.role,
+        content: m.content,
+      })),
       stream: false,
-      max_tokens: 50, // slightly bigger for better context replies
-      temperature: 0.7,
+      options: {
+        temperature: 0.7,
+        num_predict: 50, // equivalent to max_tokens
+      }
     }),
   });
+
 
   if (!response.ok) throw new Error(`Groq AI API error: ${response.statusText}`);
 
