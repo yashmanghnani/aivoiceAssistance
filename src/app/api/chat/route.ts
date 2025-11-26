@@ -77,7 +77,7 @@ async function callGroqAI(messages: { role: string; content: string }[]) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gemma3:1b",
+      model: "gemma3:4b",
       messages: messages.map(m => ({
         role: m.role,
         content: m.content,
