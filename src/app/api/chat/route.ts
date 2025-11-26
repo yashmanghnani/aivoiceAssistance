@@ -77,7 +77,7 @@ async function callGroqAI(messages: { role: string; content: string }[]) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "gemma3:4b",
+      model: "gemma3:1b",
       messages: messages.map(m => ({
         role: m.role,
         content: m.content,
@@ -89,10 +89,12 @@ async function callGroqAI(messages: { role: string; content: string }[]) {
       }
     }),
   });
-
+  // const data = await response.json();
+  // return data.message?.content ?? ""; 
 
   if (!response.ok) throw new Error(`Groq AI API error: ${response.statusText}`);
 
   const data = await response.json();
-  return data.choices?.[0]?.message?.content || 'Sorry, no response from AI.';
+  return data.message?.content ?? "";
+  // return data.choices?.[0]?.message?.content || 'Sorry, no response from AI.';
 }
