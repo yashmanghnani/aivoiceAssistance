@@ -70,58 +70,58 @@ export async function POST(request: NextRequest) {
 //     }),
 //   });
 /** Helper: Call Local Ollama (Gemma 3:4b) */
-// async function callGroqAI(messages: { role: string; content: string }[]) {
-//   const response = await fetch('http://127.0.0.1:11434/api/chat', {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       model: "gemma3:4b",
-//       messages: messages.map(m => ({
-//         role: m.role,
-//         content: m.content,
-//       })),
-//       stream: false,
-//       options: {
-//         temperature: 0.7,
-//         num_predict: 50, // equivalent to max_tokens
-//       }
-//     }),
-//   });
-//   // const data = await response.json();
-//   // return data.message?.content ?? ""; 
-
-//   if (!response.ok) throw new Error(`Groq AI API error: ${response.statusText}`);
-
-//   const data = await response.json();
-//   return data.message?.content ?? "";
-//   // return data.choices?.[0]?.message?.content || 'Sorry, no response from AI.';
-// }
-/** Helper: Call Local Ollama Super Fast */
 async function callGroqAI(messages: { role: string; content: string }[]) {
-  // Combine messages into a single prompt (faster for generate endpoint)
-  const prompt = messages.map(m => `${m.role}: ${m.content}`).join("\n");
-
-  const response = await fetch('http://127.0.0.1:11434/api/generate', {
+  const response = await fetch('http://127.0.0.1:11434/api/chat', {
     method: 'POST',
     headers: {
       "Content-Type": "application/json",
-      "Connection": "keep-alive"
     },
     body: JSON.stringify({
-      model: "gemma3:4b",
-      prompt: prompt,
+      model: "google/gemma-3n-e4b-it:free",
+      messages: messages.map(m => ({
+        role: m.role,
+        content: m.content,
+      })),
       stream: false,
       options: {
         temperature: 0.7,
-        num_predict: 80
+        num_predict: 50, // equivalent to max_tokens
       }
     }),
   });
+  // const data = await response.json();
+  // return data.message?.content ?? ""; 
 
-  if (!response.ok) throw new Error(`Ollama error: ${response.statusText}`);
+  if (!response.ok) throw new Error(`Groq AI API error: ${response.statusText}`);
 
   const data = await response.json();
-  return data.response || "";
+  return data.message?.content ?? "";
+  // return data.choices?.[0]?.message?.content || 'Sorry, no response from AI.';
 }
+/** Helper: Call Local Ollama Super Fast */
+// async function callGroqAI(messages: { role: string; content: string }[]) {
+//   // Combine messages into a single prompt (faster for generate endpoint)
+//   const prompt = messages.map(m => `${m.role}: ${m.content}`).join("\n");
+
+//   const response = await fetch('http://127.0.0.1:11434/api/generate', {
+//     method: 'POST',
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Connection": "keep-alive"
+//     },
+//     body: JSON.stringify({
+//       model: "gemma3:4b",
+//       prompt: prompt,
+//       stream: false,
+//       options: {
+//         temperature: 0.7,
+//         num_predict: 80
+//       }
+//     }),
+//   });
+
+//   if (!response.ok) throw new Error(`Ollama error: ${response.statusText}`);
+
+//   const data = await response.json();
+//   return data.response || "";
+// }
