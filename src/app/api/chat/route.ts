@@ -95,8 +95,8 @@ async function callGroqAI(messages: { role: string; content: string }[]) {
   if (!response.ok) throw new Error(`Groq AI API error: ${response.statusText}`);
 
   const data = await response.json();
-  return data.message?.content ?? "";
-  // return data.choices?.[0]?.message?.content || 'Sorry, no response from AI.';
+  // return data.message?.content ?? "";
+  return data.choices?.[0]?.message?.content || 'Sorry, no response from AI.';
 }
 /** Helper: Call Local Ollama Super Fast */
 // async function callGroqAI(messages: { role: string; content: string }[]) {
